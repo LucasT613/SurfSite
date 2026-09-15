@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import pytest
 
-from Data.Wave_Data import Forecast
+from Data.Forcast import Forecast
 from tests.conftest import make_reading
 
 

@@ -11,7 +11,13 @@ class HourlyReading:
     swell_period: float
     swell_direction: float
 
-def parse_forecast_dict(data) -> dict:
+@dataclass
+class WindReading:
+    time: datetime
+    wind_speed: float
+    wind_direction: float
+
+def parse_wave_dict(data) -> dict:
     hourly = data['hourly']
     readings = {}
     for i in range(len(hourly['time'])):
@@ -23,6 +29,18 @@ def parse_forecast_dict(data) -> dict:
             swell_height=hourly['swell_wave_height'][i],
             swell_period=hourly['swell_wave_period'][i],
             swell_direction=hourly['swell_wave_direction'][i],
+        )
+        readings[reading.time] = reading
+    return readings
+ 
+def parse_wind_dict(data) -> dict:
+    hourly = data['hourly']
+    readings = {}
+    for i in range(len(hourly['time'])):
+        reading = WindReading(
+            time=datetime.fromisoformat(hourly['time'][i]),
+            wind_speed=hourly['wind_speed_10m'][i],
+            wind_direction=hourly['wind_direction_10m'][i],
         )
         readings[reading.time] = reading
     return readings

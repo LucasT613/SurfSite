@@ -1,5 +1,9 @@
-from Data import API
+import pytest
+from Data import Wave_API
 
+@pytest.fixture(autouse=True)
+def clear_cache():
+    Wave_API._cache.clear()
 
 class FakeResponse:
     def __init__(self, json_data):
@@ -17,9 +21,9 @@ def test_get_wave_data_returns_parsed_json(monkeypatch, fake_api_response):
         captured["params"] = params
         return FakeResponse(fake_api_response)
 
-    monkeypatch.setattr(API.requests, "get", fake_get)
+    monkeypatch.setattr(Wave_API.requests, "get", fake_get)
 
-    result = API.get_wave_data(33.66, -117.99)
+    result = Wave_API.get_wave_data(33.66, -117.99)
 
     assert result == fake_api_response
 
@@ -32,9 +36,9 @@ def test_get_wave_data_calls_correct_url_and_params(monkeypatch, fake_api_respon
         captured["params"] = params
         return FakeResponse(fake_api_response)
 
-    monkeypatch.setattr(API.requests, "get", fake_get)
+    monkeypatch.setattr(Wave_API.requests, "get", fake_get)
 
-    API.get_wave_data(33.66, -117.99)
+    Wave_API.get_wave_data(33.66, -117.99)
 
     assert captured["url"] == "https://marine-api.open-meteo.com/v1/marine"
     assert captured["params"]["latitude"] == 33.66
