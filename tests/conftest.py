@@ -2,12 +2,12 @@ from dataclasses import replace
 from datetime import datetime, timedelta
 import pytest
 
-from Data.Parsing import HourlyReading
+from Data.Parsing import WaveReading
 
 
-def make_reading(hour_offset: int, base_time: datetime | None = None, **overrides) -> HourlyReading:
+def make_reading(hour_offset: int, base_time: datetime | None = None, **overrides) -> WaveReading:
     base_time = base_time or datetime(2026, 9, 13, 0, 0)
-    reading = HourlyReading(
+    reading = WaveReading(
         time=base_time + timedelta(hours=hour_offset),
         wave_height=1.0,
         wave_period=10.0,
@@ -81,4 +81,20 @@ def fake_wind_api_response():
             "wind_speed_10m": [5.2, 6.1, 7.8],
             "wind_direction_10m": [270, 265, 260],
         },
+    }
+
+@pytest.fixture
+def fake_tide_api_response():
+    """
+    A small, hand-built fake of what NOAA CO-OPS returns for 6-minute-interval
+    tide predictions, trimmed to a few points to keep tests easy to verify.
+    Note: NOAA's timestamps use a space, not 'T', and values come back as
+    strings -- both worth handling deliberately when parsing.
+    """
+    return {
+        "predictions": [
+            {"t": "2026-09-13 00:00", "v": "2.145"},
+            {"t": "2026-09-13 00:06", "v": "2.198"},
+            {"t": "2026-09-13 00:12", "v": "2.251"},
+        ]
     }
